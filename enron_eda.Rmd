@@ -1,0 +1,87 @@
+---
+title: "Enron Data for EDA"
+author: "R. Lorenzo"
+date: "February 13, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(alr3)
+library(gridExtra)
+library(GGally)
+library(memisc)
+library(reshape2)
+library(readr)
+library(memisc)
+library(dtplyr)
+setwd("C:/Users/rl1891/version-control/MachineLearning/ud120-projects/final_project")
+```
+
+
+```{r}
+library(readr)
+enron_for_eda <- read_csv("C:/Users/rl1891/version-control/MachineLearning/ud120-projects/final_project/enron_for_eda.txt", 
+    col_types = cols(poi = col_factor(levels = c("False", 
+        "True"))))
+View(enron_for_eda)
+```
+
+
+
+
+```{r, message=FALSE, warning=FALSE}
+ggpairs(enron_for_eda, columns = c("salary", "bonus", "exercised_stock_options",
+                                   "long_term_incentive"))
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+ggpairs(enron_for_eda, columns = c("salary", "deferral_payments", 
+                                   "deferred_income", "director_fees",
+                                   "loan_advances", "other"))
+```
+
+```{r, message=FALSE, warning=FALSE}
+ggpairs(enron_for_eda, columns = c("salary", "exercised_stock_options",
+                                   "restricted_stock", "restricted_stock_deferred",
+                                   "total_stock_value"))
+```
+
+```{r}
+ggpairs(enron_for_eda, columns = c("salary", "from_poi_to_this_person",
+                                   "from_this_person_to_poi", "shared_receipt_with_poi",
+                                   "from_messages", "to_messages"))
+```
+
+
+
+
+
+
+
+```{r}
+ggplot(aes(x=salary, y=from_poi_to_this_person, color = poi), data = enron_for_eda) +
+  geom_point()
+```
+
+```{r}
+ggplot(aes(x=salary, y=from_this_person_to_poi, color = poi), data = enron_for_eda) +
+  geom_point()
+```
+```{r}
+ggplot(aes(x=salary, y=shared_receipt_with_poi, color = poi), data = enron_for_eda) +
+  geom_point()
+```
+
