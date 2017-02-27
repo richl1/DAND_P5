@@ -17,6 +17,7 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 from itertools import compress
 from pprint import pprint
 from IPython.display import display
+from time import time
 
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
@@ -117,7 +118,7 @@ pprint(df_nans.sort_values(by = 0, ascending=False))
 # Implement Modeling Pipeline with "Select K Best" and "Naive Bayes"
 ####################################################################
 print "\n******************\n Select K Best + Gaussian NB Pipeline\n"
-
+t0 = time()
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
@@ -130,6 +131,7 @@ gs.fit(features, labels)
 clf = gs.best_estimator_
 
 # Print the selected features and pvalues
+print "Processing time:", round(time()-t0, 3), "s"
 k_best_support = clf.named_steps['SKB'].get_support(False).tolist()
 df_selected_features1 = pd.DataFrame(
     {'Feature': list(compress(features_no_poi, k_best_support)),
@@ -147,7 +149,7 @@ test_classifier(clf, dataset, feature_list)
 # Implement Modeling Pipeline with "Select K Best" and "DecisionTree"
 ####################################################################
 print "\n******************\n Select K Best + DecisionTree Pipeline\n"
-
+t0 = time()
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 
@@ -166,6 +168,7 @@ gs.fit(features, labels)
 clf = gs.best_estimator_
 
 # Print the selected features, pvalues, and DT Importances
+print "Processing time:", round(time()-t0, 3), "s"
 k_best_support = clf.named_steps['SKB'].get_support(False).tolist()
 df_selected_features2 = pd.DataFrame(
     {'Feature': list(compress(features_no_poi, k_best_support)),
@@ -192,15 +195,15 @@ features_list_manual = ['poi',
 
 print "Manually Selected Features : ", features_list_manual[1:]
 
+t0 = time()
 data = featureFormat(my_dataset, features_list_manual, sort_keys = True)
 labels, features = targetFeatureSplit(data)
 features_train, features_test, labels_train, labels_test\
     = train_test_split(features, labels, test_size=0.2, random_state=42)
 clf = GaussianNB()
+print "Processing time:", round(time()-t0, 3), "s"
 
 # Test the results
 dump_classifier_and_data(clf, my_dataset, features_list_manual)
 clf, dataset, features_list_manual = load_classifier_and_data()
 test_classifier(clf, dataset, features_list_manual)
-
-dump_classifier_and_data(clf, my_dataset, features_list)
